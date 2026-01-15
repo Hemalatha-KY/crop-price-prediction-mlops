@@ -1,0 +1,68 @@
+# Project Configuration
+project:
+  name: "crop-price-prediction"
+  version: "1.0.0"
+  description: "MLOps project for crop price prediction"
+
+# Data Configuration
+data:
+  raw_path: "dataset_indian_crop_price.csv"
+  processed_path: "data/processed/crop_price_processed.csv"
+  target_column: "Price (₹/ton)"
+  test_size: 0.2
+  random_state: 42
+
+# Model Configuration
+models:
+  random_forest:
+    n_estimators: 100
+    max_depth: 10
+    random_state: 42
+  
+  svr:
+    kernel: "rbf"
+    C: 1.0
+    gamma: "scale"
+  
+  xgboost:
+    n_estimators: 100
+    max_depth: 6
+    learning_rate: 0.1
+    random_state: 42
+
+# Feature Columns
+features:
+  numerical:
+    - "Temperature (°C)"
+    - "Rainfall (mm)"
+    - "Supply Volume (tons)"
+    - "Demand Volume (tons)"
+    - "Transportation Cost (₹/ton)"
+    - "Fertilizer Usage (kg/hectare)"
+    - "Pest Infestation (0-1)"
+    - "Market Competition (0-1)"
+  
+  categorical:
+    - "State"
+    - "City"
+    - "Crop Type"
+    - "Season"
+
+# Training Configuration
+training:
+  cross_validation_folds: 5
+  metrics:
+    - "mse"
+    - "mae"
+    - "r2"
+
+# ClearML Configuration
+clearml:
+  project_name: "Crop Price Prediction"
+  task_name: "Model Training"
+
+# API Configuration
+api:
+  host: "0.0.0.0"
+  port: 5000
+  debug: false
