@@ -1,0 +1,19 @@
+# Core ML/Data Science
+pandas>=2.0.0
+numpy>=1.20.0
+scikit-learn>=1.2.0
+xgboost>=2.0.0
+
+# Web Framework
+flask>=3.0.0
+flask-cors>=4.0.0
+
+# Utilities
+pyyaml>=6.0.0
+joblib>=1.0.0
+
+# Testing
+pytest>=7.0.0
+
+# MLOps Tools (optional)
+dvc>=3.0.0
