@@ -61,7 +61,18 @@ def sample_data():
 def config_loader(sample_config):
     """Create a mock config loader."""
     mock_config = Mock(spec=ConfigLoader)
-    mock_config.get.side_effect = lambda key, default=None: sample_config.get(key, default)
+    
+    def mock_get_side_effect(key, default=None):
+        keys = key.split('.')
+        value = sample_config
+        for k in keys:
+            if isinstance(value, dict) and k in value:
+                value = value[k]
+            else:
+                return default
+        return value
+    
+    mock_config.get.side_effect = mock_get_side_effect
     return mock_config
 
 
