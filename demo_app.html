@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Price Prediction Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #27ae60;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #2ecc71;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            border-left: 4px solid #27ae60;
+        }
+        .loading {
+            text-align: center;
+            color: #7f8c8d;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-left-color: #e74c3c;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            border-left-color: #28a745;
+            color: #155724;
+        }
+        .api-info {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌾 Crop Price Prediction</h1>
+        
+        <div class="api-info">
+            <strong>🚀 API Status:</strong> <span id="api-status">Checking...</span><br>
+            <strong>📊 Current Model:</strong> <span id="current-model">Loading...</span>
+        </div>
+
+        <form id="prediction-form">
+            <div class="form-group">
+                <label for="state">State:</label>
+                <select id="state" name="State" required>
+                    <option value="">Select State</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="city">City:</label>
+                <select id="city" name="City" required>
+                    <option value="">Select City</option>
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Ahmedabad">Ahmedabad</option>
+                    <option value="Pune">Pune</option>
+                    <option value="Chandigarh">Chandigarh</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="crop-type">Crop Type:</label>
+                <select id="crop-type" name="Crop Type" required>
+                    <option value="">Select Crop</option>
+                    <option value="Wheat">Wheat</option>
+                    <option value="Rice">Rice</option>
+                    <option value="Cotton">Cotton</option>
+                    <option value="Sugarcane">Sugarcane</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="season">Season:</label>
+                <select id="season" name="Season" required>
+                    <option value="">Select Season</option>
+                    <option value="Kharif">Kharif</option>
+                    <option value="Rabi">Rabi</option>
+                    <option value="Zaid">Zaid</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="temperature">Temperature (°C):</label>
+                <input type="number" id="temperature" name="Temperature (°C)" step="0.1" required placeholder="e.g., 25.5">
+            </div>
+
+            <div class="form-group">
+                <label for="rainfall">Rainfall (mm):</label>
+                <input type="number" id="rainfall" name="Rainfall (mm)" step="0.1" required placeholder="e.g., 100.5">
+            </div>
+
+            <div class="form-group">
+                <label for="supply">Supply Volume (tons):</label>
+                <input type="number" id="supply" name="Supply Volume (tons)" step="0.1" required placeholder="e.g., 1000.0">
+            </div>
+
+            <div class="form-group">
+                <label for="demand">Demand Volume (tons):</label>
+                <input type="number" id="demand" name="Demand Volume (tons)" step="0.1" required placeholder="e.g., 800.0">
+            </div>
+
+            <div class="form-group">
+                <label for="transport">Transportation Cost (₹/ton):</label>
+                <input type="number" id="transport" name="Transportation Cost (₹/ton)" step="0.1" required placeholder="e.g., 200.0">
+            </div>
+
+            <div class="form-group">
+                <label for="fertilizer">Fertilizer Usage (kg/hectare):</label>
+                <input type="number" id="fertilizer" name="Fertilizer Usage (kg/hectare)" step="0.1" required placeholder="e.g., 100.0">
+            </div>
+
+            <div class="form-group">
+                <label for="pest">Pest Infestation (0-1):</label>
+                <input type="number" id="pest" name="Pest Infestation (0-1)" step="0.01" min="0" max="1" required placeholder="e.g., 0.2">
+            </div>
+
+            <div class="form-group">
+                <label for="competition">Market Competition (0-1):</label>
+                <input type="number" id="competition" name="Market Competition (0-1)" step="0.01" min="0" max="1" required placeholder="e.g., 0.7">
+            </div>
+
+            <button type="submit">🔮 Predict Price</button>
+        </form>
+
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000';
+
+        // Check API status on load
+        async function checkAPIStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                
+                document.getElementById('api-status').textContent = '✅ Online';
+                document.getElementById('current-model').textContent = data.current_model;
+                document.getElementById('api-status').style.color = '#27ae60';
+            } catch (error) {
+                document.getElementById('api-status').textContent = '❌ Offline';
+                document.getElementById('current-model').textContent = 'N/A';
+                document.getElementById('api-status').style.color = '#e74c3c';
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('prediction-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.innerHTML = '🔄 Making prediction...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/predict`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <h3>🎯 Prediction Result</h3>
+                        <p><strong>Predicted Price:</strong> ₹${result.prediction.toFixed(2)} per ton</p>
+                        <p><strong>Model Used:</strong> ${result.model_used}</p>
+                        <p><strong>Confidence:</strong> Based on ${result.model_used} model</p>
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `<h3>❌ Error</h3><p>${result.error}</p>`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<h3>❌ Connection Error</h3><p>Could not connect to API. Make sure the server is running on http://localhost:5000</p>`;
+            }
+        });
+
+        // Initialize
+        checkAPIStatus();
+    </script>
+</body>
+</html>

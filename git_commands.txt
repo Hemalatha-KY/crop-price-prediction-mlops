@@ -1,0 +1,10 @@
+# RUN THESE COMMANDS (replace YOUR_USERNAME with your actual GitHub username):
+
+git remote add origin https://github.com/YOUR_USERNAME/crop-price-prediction-mlops.git
+git branch -M main
+git push -u origin main
+
+# Example:
+# git remote add origin https://github.com/johndoe/crop-price-prediction-mlops.git
+# git branch -M main
+# git push -u origin main
