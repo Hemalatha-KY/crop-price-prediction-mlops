@@ -140,14 +140,13 @@ jobs:
       uses: docker/setup-buildx-action@v3
     
     - name: Login to Docker Hub
-      if: secrets.DOCKER_USERNAME != ''
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+      continue-on-error: true
     
     - name: Build and push Docker image
-      if: secrets.DOCKER_USERNAME != ''
       uses: docker/build-push-action@v5
       with:
         context: .
@@ -157,8 +156,9 @@ jobs:
           ${{ secrets.DOCKER_USERNAME }}/crop-price-prediction:${{ github.sha }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
+      continue-on-error: true
     
     - name: Deploy to Render (trigger webhook)
-      if: secrets.RENDER_DEPLOY_WEBHOOK != ''
       run: |
         curl -X POST ${{ secrets.RENDER_DEPLOY_WEBHOOK }} || echo "Render webhook failed"
+      continue-on-error: true
